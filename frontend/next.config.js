@@ -4,11 +4,11 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['localhost', 'your-render-app.onrender.com'],
+    domains: ['localhost', 'https://talent-hub-backend-k3f3.onrender.com'],
     unoptimized: true, // Required for static exports if needed
   },
   env: {
-    BACKEND_URL: process.env.BACKEND_URL || 'https://your-render-app.onrender.com',
+    BACKEND_URL: process.env.BACKEND_URL || 'https://talent-hub-backend-k3f3.onrender.com',
   },
   // Enable static exports for Vercel
   output: 'standalone',
