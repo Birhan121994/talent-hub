@@ -119,6 +119,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://talent-hub-frontend-alpha.vercel.app",
 ]
 
 AUTH_USER_MODEL = 'portal.User'
