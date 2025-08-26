@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Download, FileText, Plus, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from '@/lib/axios';
+
 
 const ResumeGenerator = () => {
   const { user } = useAuth();
@@ -77,8 +79,8 @@ const ResumeGenerator = () => {
   const handleGenerateResume = async () => {
     setIsGenerating(true);
     try {
-      const response = await axios.post(
-        'http://localhost:8000/api/auth/generate-resume/',
+      const response = await api.post(
+        '/api/auth/generate-resume/',
         { ...formData, template },
         { responseType: 'blob' }
       );

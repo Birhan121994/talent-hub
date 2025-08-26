@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import JobCard from '@/components/JobCard';
 import JobRecommendations from '@/components/JobRecommendations';
+import api from '@/lib/axios';
 import { 
   Briefcase, Users, TrendingUp, Award, 
   Search, MapPin, Clock, Shield, 
@@ -12,7 +13,7 @@ import axios from 'axios';
 
 const getJobs = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/api/jobs/');
+    const response = await api.get('/api/jobs/');
     // Handle both array and object response formats
     if (Array.isArray(response.data)) {
       return response.data;

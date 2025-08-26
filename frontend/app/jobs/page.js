@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { useDebounce } from '@/hooks/useDebounce';
+import api from '@/lib/axios';
 
 // Available filters
 const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'];
@@ -71,7 +72,7 @@ const JobsPage = () => {
         params.append('experience', debouncedFilters.experience);
       }
 
-      const response = await axios.get(`http://localhost:8000/api/jobs/?${params}`);
+      const response = await api.get(`/api/jobs/?${params}`);
       const data = response.data;
 
       setJobs(data.jobs);

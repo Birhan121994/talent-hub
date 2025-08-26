@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import api from '@/lib/axios';
 
 const PostJobPage = () => {
   const [formData, setFormData] = useState({
@@ -104,7 +105,7 @@ const PostJobPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/jobs/', {
+      const response = await api.post('/api/jobs/', {
         ...formData,
         salary: formData.salary || null
       });

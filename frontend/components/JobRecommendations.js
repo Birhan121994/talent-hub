@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Sparkles, Brain, TrendingUp, Target, Clock, Zap } from 'lucide-react';
 import JobCard from './JobCard';
 import axios from 'axios';
+import api from '@/lib/axios';
+
 
 const JobRecommendations = () => {
   const [recommendedJobs, setRecommendedJobs] = useState([]);
@@ -21,7 +23,7 @@ const JobRecommendations = () => {
   const fetchRecommendations = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/api/jobs/recommendations/');
+      const response = await api.get('/api/jobs/recommendations/');
       setRecommendedJobs(response.data.recommendations || []);
       setError(null);
     } catch (err) {

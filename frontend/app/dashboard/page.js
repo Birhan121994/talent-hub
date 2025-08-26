@@ -18,6 +18,7 @@ import {
   ChevronLeft, ChevronRight
 } from 'lucide-react';
 import axios from 'axios';
+import api from '@/lib/axios';
 
 const DashboardPage = () => {
   const [applications, setApplications] = useState([]);
@@ -59,17 +60,17 @@ const DashboardPage = () => {
   const fetchData = async () => {
     try {
       if (user?.role === 'developer') {
-        const appsResponse = await axios.get('http://localhost:8000/api/applications/');
+        const appsResponse = await api.get('/api/applications/');
         // Handle both array and object response formats
         const appsData = Array.isArray(appsResponse.data) ? appsResponse.data : appsResponse.data.results || [];
         setApplications(appsData);
       } else if (user?.role === 'employer') {
-        const appsResponse = await axios.get('http://localhost:8000/api/applications/');
+        const appsResponse = await api.get('/api/applications/');
         // Handle both array and object response formats
         const appsData = Array.isArray(appsResponse.data) ? appsResponse.data : appsResponse.data.results || [];
         setApplications(appsData);
         
-        const jobsResponse = await axios.get('http://localhost:8000/api/jobs/?all=true');
+        const jobsResponse = await api.get('/api/jobs/?all=true');
 
         console.log('Jobs response:', jobsResponse.data);
 
@@ -153,8 +154,8 @@ const DashboardPage = () => {
   const handleStatusUpdate = async (applicationId, newStatus) => {
     setUpdatingStatus(applicationId);
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/applications/${applicationId}/`,
+      const response = await api.put(
+        `/api/applications/${applicationId}/`,
         { status: newStatus }
       );
       
@@ -178,7 +179,7 @@ const DashboardPage = () => {
 
   const handleDeleteJob = async (jobId) => {
     try {
-      await axios.delete(`http://localhost:8000/api/jobs/${jobId}/`);
+      await api.delete(`/api/jobs/${jobId}/`);
       toast.success('Job deleted successfully!');
       // Refresh the jobs list
       fetchData();
@@ -237,7 +238,7 @@ const DashboardPage = () => {
       const formData = new FormData();
       formData.append('resume', file);
       
-      const response = await axios.put('http://localhost:8000/api/auth/resume/', formData, {
+      const response = await api.put('/api/auth/resume/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -265,7 +266,7 @@ const DashboardPage = () => {
           label: 'Yes',
           onClick: async () => {
             try {
-              await axios.delete('http://localhost:8000/api/auth/resume/');
+              await api.delete('/api/auth/resume/');
               toast.success('Resume deleted successfully!');
               await refreshUser();
             } catch (error) {
@@ -289,7 +290,7 @@ const DashboardPage = () => {
         throw new Error('User is not authenticated');
       }
 
-      const response = await fetch(`http://localhost:8000/api/applications/${applicationId}/download-resume/`, {
+      const response = await fetch(`https://talent-hub-backend-k3f3.onrender.com/api/applications/${applicationId}/download-resume/`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -324,7 +325,7 @@ const DashboardPage = () => {
         throw new Error('User is not authenticated');
       }
 
-      const response = await fetch(`http://localhost:8000/api/users/me/download-resume/`, {
+      const response = await fetch(`https://talent-hub-backend-k3f3.onrender.com/api/users/me/download-resume/`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { MapPin, DollarSign, Calendar, User, Building, ArrowLeft, Pencil } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from '@/lib/axios';
 
 const JobDetailPage = () => {
   const [job, setJob] = useState(null);
@@ -28,7 +29,7 @@ const JobDetailPage = () => {
 
   const fetchJob = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/jobs/${id}/`);
+      const response = await api.get(`/api/jobs/${id}/`);
       setJob(response.data);
     } catch (error) {
       console.error('Error fetching job:', error);
@@ -42,7 +43,7 @@ const JobDetailPage = () => {
     if (!user) return;
     
     try {
-      const response = await axios.get('http://localhost:8000/api/applications/');
+      const response = await api.get('/api/applications/');
       const userApplications = response.data;
       const hasApplied = userApplications.some(app => app.job.id === parseInt(id));
       setHasApplied(hasApplied);

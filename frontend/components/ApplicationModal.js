@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { X, Upload, FileText, AlertCircle } from 'lucide-react';
+import api from '@/lib/axios';
+
 
 const ApplicationModal = ({ job, isOpen, onClose, onApplicationSubmit }) => {
   const [coverLetter, setCoverLetter] = useState('');
@@ -63,7 +65,7 @@ const ApplicationModal = ({ job, isOpen, onClose, onApplicationSubmit }) => {
         formData.append('resume', resume);
       }
       
-      const response = await axios.post('http://localhost:8000/api/applications/', formData, {
+      const response = await api.post('/api/applications/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

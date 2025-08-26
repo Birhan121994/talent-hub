@@ -7,6 +7,7 @@ import RichTextEditor from '@/components/RichTextEditor';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import api from '@/lib/axios';
 
 import ConfirmationModal from '@/components/ConfirmationModal';
 
@@ -39,7 +40,7 @@ const EditJobPage = () => {
 
   const fetchJobData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/jobs/${id}/`);
+      const response = await api.get(`/api/jobs/${id}/`);
       
       // Check if user owns this job
       if (response.data.created_by.id !== user.id && user.role !== 'admin') {
@@ -135,7 +136,7 @@ const EditJobPage = () => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:8000/api/jobs/${id}/`, {
+      const response = await api.put(`/api/jobs/${id}/`, {
         ...formData,
         salary: formData.salary || null
       });
@@ -167,7 +168,7 @@ const EditJobPage = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:8000/api/jobs/${id}/`);
+      await api.delete(`/api/jobs/${id}/`);
       toast.success('Job deleted successfully!');
       router.push('/dashboard');
     } catch (error) {
