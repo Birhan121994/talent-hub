@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import api from '@/lib/axios';
 
 const AuthContext = createContext();
 
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/login/', credentials);
+      const response = await api.post('/api/auth/login/', credentials);
       const { access, refresh, user } = response.data;
       
       // Set token and user
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/register/', userData);
+      const response = await api.post('/api/auth/register/', userData);
       const { access, refresh, user } = response.data;
       
       // Set token and user
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }) => {
   if (!savedToken) return;
 
   try {
-    const response = await axios.get('http://localhost:8000/api/auth/user/', {
+    const response = await api.get('/api/auth/user/', {
       headers: {
         Authorization: `Bearer ${savedToken}`,
       },
