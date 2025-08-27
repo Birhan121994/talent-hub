@@ -4,12 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import RichTextEditor from '@/components/RichTextEditor';
-import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'react-toastify';
-import axios from 'axios';
-import api from '@/lib/axios';
-
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { toast } from 'react-toastify';
+import api from '@/lib/axios';
 
 const EditJobPage = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +26,7 @@ const EditJobPage = () => {
   const router = useRouter();
   const { id } = useParams();
   const { user, logout } = useAuth();
+  const { isDarkMode } = useTheme();
 
   // Fetch job data
   useEffect(() => {
@@ -40,7 +40,7 @@ const EditJobPage = () => {
 
   const fetchJobData = async () => {
     try {
-      const response = await api.get(`/api/jobs/${id}/`);
+      const response = await api.get(`/jobs/${id}/`);
       
       // Check if user owns this job
       if (response.data.created_by.id !== user.id && user.role !== 'admin') {
@@ -136,7 +136,7 @@ const EditJobPage = () => {
     }
 
     try {
-      const response = await api.put(`/api/jobs/${id}/`, {
+      const response = await api.put(`/jobs/${id}/`, {
         ...formData,
         salary: formData.salary || null
       });
@@ -163,12 +163,8 @@ const EditJobPage = () => {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
-      return;
-    }
-
     try {
-      await api.delete(`/api/jobs/${id}/`);
+      await api.delete(`/jobs/${id}/`);
       toast.success('Job deleted successfully!');
       router.push('/dashboard');
     } catch (error) {
@@ -187,10 +183,12 @@ const EditJobPage = () => {
   // Show loading while checking authentication and fetching data
   if (!user || fetching) {
     return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <div className="pt-16 flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <Navbar />
+        </div>
+        <div className="pt-32 flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-blue-400"></div>
         </div>
       </div>
     );
@@ -203,27 +201,29 @@ const EditJobPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Navbar />
+      </div>
       
-      <div className="pt-16 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-32 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
         <div className="w-full max-w-4xl">
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center mb-8">
-              <h1 className="text-2xl font-bold text-gray-800">
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
                 Edit Job Post
               </h1>
               <button
                 onClick={() => setDeleteModalOpen(true)}
-                className="bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors font-medium"
-                >
+                className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors font-medium"
+              >
                 Delete Job
-                </button>
+              </button>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-8">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Job Title *
                 </label>
                 <input
@@ -231,7 +231,7 @@ const EditJobPage = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus bg-white text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="e.g. Senior Frontend Developer"
                 />
                 {errors.title && (
@@ -241,7 +241,7 @@ const EditJobPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     Location *
                   </label>
                   <input
@@ -249,7 +249,7 @@ const EditJobPage = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus bg-white text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="e.g. Remote, New York, NY, etc."
                   />
                   {errors.location && (
@@ -258,7 +258,7 @@ const EditJobPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     Salary (optional)
                   </label>
                   <input
@@ -266,7 +266,7 @@ const EditJobPage = () => {
                     name="salary"
                     value={formData.salary}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus bg-white text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     placeholder="e.g. 75000"
                   />
                   {errors.salary && (
@@ -276,7 +276,7 @@ const EditJobPage = () => {
               </div>
 
               <div className="mt-8">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Job Description *
                 </label>
                 <RichTextEditor
@@ -288,7 +288,7 @@ const EditJobPage = () => {
               </div>
 
               <div className="mt-8">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Requirements & Qualifications *
                 </label>
                 <RichTextEditor
@@ -299,18 +299,18 @@ const EditJobPage = () => {
                 />
               </div>
 
-              <div className="flex justify-end space-x-4 pt-8 mt-8 border-t border-gray-200">
+              <div className="flex justify-end space-x-4 pt-8 mt-8 border-t border-gray-200 dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => router.back()}
-                  className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                  className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 transition-colors font-medium"
+                  className="bg-primary dark:bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 transition-colors font-medium"
                 >
                   {loading ? (
                     <div className="flex items-center">
@@ -326,18 +326,19 @@ const EditJobPage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Job Post"
+        message="Are you sure you want to delete this job post? This action cannot be undone."
+        confirmText="Delete Job"
+        cancelText="Cancel"
+        isDestructive={true}
+      />
     </div>
   );
-  <ConfirmationModal
-  isOpen={deleteModalOpen}
-  onClose={() => setDeleteModalOpen(false)}
-  onConfirm={handleDelete}
-  title="Delete Job Post"
-  message="Are you sure you want to delete this job post? This action cannot be undone."
-  confirmText="Delete Job"
-  cancelText="Cancel"
-  isDestructive={true}
-/>
 };
 
 export default EditJobPage;
