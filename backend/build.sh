@@ -18,6 +18,9 @@ pip install -r requirements.txt
 # Collect static files
 python manage.py collectstatic --no-input
 
+# Create new migrations for model changes
+python manage.py makemigrations --noinput
+
 # Apply database migrations
 python manage.py migrate
 
