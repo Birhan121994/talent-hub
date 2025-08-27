@@ -12,22 +12,27 @@ import {
 import axios from 'axios';
 
 const getJobs = async () => {
-  try {
-    const response = await api.get('/api/jobs/');
-    // Handle both array and object response formats
-    if (Array.isArray(response.data)) {
-      return response.data;
-    } else if (response.data && Array.isArray(response.data.jobs)) {
-      return response.data.jobs;
-    } else {
-      console.error('Unexpected response format:', response.data);
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching jobs:', error);
+  const res = await fetch('https://talent-hub-backend-k3f3.onrender.com/api/jobs/', {
+    next: { revalidate: 60 }, // Optional caching
+  });
+
+  if (!res.ok) {
+    console.error('Failed to fetch jobs:', res.statusText);
+    return [];
+  }
+
+  const data = await res.json();
+
+  if (Array.isArray(data)) {
+    return data;
+  } else if (Array.isArray(data.jobs)) {
+    return data.jobs;
+  } else {
+    console.error('Unexpected data format:', data);
     return [];
   }
 };
+
 
 const StatsCard = ({ icon: Icon, number, label, color }) => (
   <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 card-hover">
