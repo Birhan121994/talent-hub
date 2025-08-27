@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
+from cloudinary_storage.storage import MediaCloudinaryStorage
+import os
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -14,6 +16,7 @@ class User(AbstractUser):
     resume = models.FileField(
         upload_to='resumes/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'docx'])],
+        storage=MediaCloudinaryStorage(),
         blank=True,
         null=True
     )
@@ -22,6 +25,12 @@ class User(AbstractUser):
     
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+    @property
+    def resume_url(self):
+        if self.resume:
+            return self.resume.url
+        return None
 
 class Job(models.Model):
     title = models.CharField(max_length=200)
@@ -53,6 +62,7 @@ class Application(models.Model):
     resume = models.FileField(
         upload_to='application_resumes/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'docx'])],
+        storage=MediaCloudinaryStorage(),
         blank=True,
         null=True
     )
@@ -63,3 +73,9 @@ class Application(models.Model):
     
     def __str__(self):
         return f"{self.applicant.username} - {self.job.title}"
+
+    @property
+    def resume_url(self):
+        if self.resume:
+            return self.resume.url
+        return None

@@ -72,10 +72,16 @@ class UserLoginSerializer(serializers.Serializer):
         return data
 
 class UserSerializer(serializers.ModelSerializer):
+    resume_url = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 
                  'role', 'phone', 'company', 'resume', 'resume_original_name')
+
+    def get_resume_url(self, obj):
+        if obj.resume:
+            return obj.resume.url
+        return None
 
 
 class JobSerializer(serializers.ModelSerializer):
@@ -100,10 +106,16 @@ class JobSerializer(serializers.ModelSerializer):
 class ApplicationSerializer(serializers.ModelSerializer):
     applicant = UserSerializer(read_only=True)
     job = JobSerializer(read_only=True)
+    resume_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Application
         fields = '__all__'
+
+    def get_resume_url(self, obj):
+        if obj.resume:
+            return obj.resume.url
+        return None
 
 class ApplicationCreateSerializer(serializers.ModelSerializer):
     resume = serializers.FileField(required=False)  # Make resume optional
