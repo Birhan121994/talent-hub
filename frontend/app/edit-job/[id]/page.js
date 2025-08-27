@@ -40,7 +40,7 @@ const EditJobPage = () => {
 
   const fetchJobData = async () => {
     try {
-      const response = await api.get(`/jobs/${id}/`);
+      const response = await api.get(`/api/jobs/${id}/`);
       
       // Check if user owns this job
       if (response.data.created_by.id !== user.id && user.role !== 'admin') {
@@ -136,7 +136,7 @@ const EditJobPage = () => {
     }
 
     try {
-      const response = await api.put(`/jobs/${id}/`, {
+      const response = await api.put(`/api/jobs/${id}/`, {
         ...formData,
         salary: formData.salary || null
       });
@@ -164,7 +164,7 @@ const EditJobPage = () => {
 
   const handleDelete = async () => {
     try {
-      await api.delete(`/jobs/${id}/`);
+      await api.delete(`/api/jobs/${id}/`);
       toast.success('Job deleted successfully!');
       router.push('/dashboard');
     } catch (error) {
