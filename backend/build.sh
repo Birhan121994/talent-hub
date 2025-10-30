@@ -12,9 +12,6 @@ apt-get update && apt-get install -y \
     zlib1g-dev \
     libfreetype6-dev
 
-# Delete existing migration files (except __init__.py)
-find backend/portal/migrations -name "*.py" -not -name "__init__.py" -delete
-
 # Install Python dependencies
 pip install -r requirements.txt
 
